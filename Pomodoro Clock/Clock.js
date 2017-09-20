@@ -36,19 +36,19 @@ function Clock(){
 			var c = parseInt(this.sel3.innerText);
 			var d = parseInt(this.sel4.innerText);
 			this.time = (a*10+b)*60+c*10+d;
-			console.log(a, b, c, d);
 		}
 		this.init = function(){
 			this.state = 1;
 			var foo = setInterval(function(){
-				this.count();
-				this.trans();
-				this.show();
 				if(this.time <= 0){
 					this.state = 0;
 					this.time = 0;
 					clearInterval(foo);
-				}
+				}else{
+					this.count();
+					this.trans();
+					this.show();
+				}			
 			}.bind(this), 1000);
 		}
 	}
