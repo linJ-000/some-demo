@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+	<title>Pomodoro Clock</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div class="main">
+		<div class="time">
+			<span id="num1" class="data">2</span>
+			<span id="num2" class="data">5</span>
+			<span class="data">:</span>
+			<span id="num3" class="data">0</span>
+			<span id="num4" class="data">0</span>
+		</div>
+		<div id="startBtn">Start</div>
+	</div>
+</body>
+<script type="text/javascript" src="Clock.js"></script>
+<script type="text/javascript">
+	var clock = new Clock();
+	clock.bind('num1', 'num2', 'num3', 'num4');
+	document.getElementById("startBtn").onclick = function(){	
+		if(clock.state === 0){
+			clock.setTime();
+			clock.init();
+		}
+	}
+</script>
+</html>
