@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>calculator</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div class="main">
+		<div id="show"></div>
+		<div class="plate">
+			<div class="left">
+				<div class="btn">C</div>
+				<div class="btn">()</div>
+				<div class="btn">&larr;</div>
+				<div class="btn">7</div>
+				<div class="btn">8</div>
+				<div class="btn">9</div>
+				<div class="btn">4</div>
+				<div class="btn">5</div>
+				<div class="btn">6</div>
+				<div class="btn">1</div>
+				<div class="btn">2</div>
+				<div class="btn">3</div>
+				<div class="btn zero">0</div>
+				<div class="btn">.</div>
+			</div>
+			<div class="right">
+				<div class="btn">/</div>
+				<div class="btn">*</div>
+				<div class="btn">-</div>
+				<div class="btn">+</div>
+				<div class="btn color">=</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="Calculator.js"></script>
+<script type="text/javascript">
+	var calculator = new Calculator('show');
+	calculator.init();
+	var btn = document.getElementsByClassName('btn');
+	for(var i=0; i<btn.length; i++){
+		btn[i].onclick = function(){
+			calculator.checkInput(this);
+		}
+	}
+	
+</script>
+</html>
