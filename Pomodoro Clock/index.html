@@ -20,7 +20,7 @@
 <script type="text/javascript" src="Clock.js"></script>
 <script type="text/javascript">
 	var clock = new Clock();
-	clock.bind('num1', 'num2', 'num3', 'num4');
+	clock.bindElement('num1', 'num2', 'num3', 'num4');
 	document.getElementById("startBtn").onclick = function(){	
 		if(clock.state === 0){
 			clock.setTime();

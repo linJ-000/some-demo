@@ -24,7 +24,7 @@ function Clock(){
 			this.sel3.innerHTML = this.min[2];
 			this.sel4.innerHTML = this.min[3];
 		}
-		this.bind = function(a, b, c, d){
+		this.bindElement = function(a, b, c, d){
 			this.sel1 = document.getElementById(a);
 			this.sel2 = document.getElementById(b);
 			this.sel3 = document.getElementById(c);
@@ -38,7 +38,7 @@ function Clock(){
 			this.time = (a*10+b)*60+c*10+d;
 		}
 		this.init = function(){
-			this.state = 1;
+			this.state = 1;	
 			var foo = setInterval(function(){
 				if(this.time <= 0){
 					this.state = 0;
