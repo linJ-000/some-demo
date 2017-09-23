@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Todolist</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div class="main">
+		<h2 id="empty">Todolist</h2>
+		<input type="" name="" id="input">
+		<div id="list">
+			<div class="item">
+				<div class="del"></div>
+				<div class="content"></div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript" src="Stage.js"></script>
+<script type="text/javascript">
+	var input = document.getElementById('input');
+	var ctx = document.getElementById('list');
+	var stage = new Stage();
+	stage.show(ctx);
+
+	document.onkeydown = function(e){
+		var keyNum=window.event ? e.keyCode :e.which;
+		if(keyNum == 13 && input.value){
+			stage.add({
+				line:0,
+				content:input.value
+			});
+			stage.show(ctx);
+			input.value = '';
+		}
+	}
+	document.getElementById('empty').onclick = function(){
+		stage.empty();
+		stage.show(ctx);
+	}
+	document.getElementById('list').onclick = function(e){
+		var num = e.target.parentNode.id;
+		var className = e.target.className;
+		console.log(isNaN(num))
+		if(!isNaN(num)){
+			console.log('num')
+			if(className == 'del'){
+				console.log('del')
+				stage.del(num);
+			}else if(className == 'content'){
+				console.log('strike')
+				stage.strike(num);
+			}
+		}
+		stage.show(ctx);
+	}
+</script>
+</body>
+</html>
