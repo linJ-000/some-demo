@@ -1,220 +1,173 @@
-var stage = {
-	W: null,
-	/*画布宽*/
-	H: null,
-	/*画布高*/
-	context: null,
-	/*canvas执行上下文*/
-	emenys: [],
-	/*敌机数组*/
-	plane: null,
-	/*飞机对象*/
-	bullets: [],
-	/*子弹数组*/
-	emenyNum: 20,
-	/*敌机数组长度*/
-	score: 0,
-	/*分数，击落敌机数量*/
-	outside: 0,/*飞机是否触碰到边界 0:不出界，37：左触界；38：上触界；39：右触界；40：下触界*/
+(function(){
 
-	/*初始化*/
-	init: function(global) {
-		this.context = global.ctx;
-		this.W = global.W;
-		this.H = global.H;
-		this.plane = this.newPlane();
-		for (var i = 0, l = this.emenyNum; i < l; i++) {
-			var emeny = this.newEmeny({
-				left: this.W + Math.random() * this.W,
-				top: Math.random() * this.H
-			});
-			this.emenys.push(emeny);
-		}
-		setInterval(function() {
-			this.render();
-			this.update();
-		}.bind(this), 50);
-
-		document.addEventListener('keydown', function(e) {
-			var key = e.keyCode;
-			if (key == 32) {
-				this.shoot();
-			}else{
-				this.plane.move(key, this.outside);
-			}
-		}.bind(this));
-	},
-
-	/*创建飞机*/
-	newPlane: function(obj) {
-		var obj = obj || {}; //不传参时将obj定义为空数组，否则会找不到obj.width报错
-		return {
-			width: obj.width || 50,
-			height: obj.height || 50,
-			moveSpeed: obj.moveSpeed || 10,
-			top: obj.top || 50,
-			left: obj.left || 50,
-			color: obj.color || 'red',
-			move: function(key, outside) {
-				if(key === 37 && outside !== 37){
-					this.left -= this.moveSpeed;
-				}else if(key === 38 && outside !== 38){
-					this.top -= this.moveSpeed;
-				}else if(key === 39 && outside !== 39){
-					this.left += this.moveSpeed;
-				}else if(key === 40 && outside !== 40){
-					this.top += this.moveSpeed;
-				}else{
-					return;
-				}
-			console.log(this.outside)
-			}
-		}
-	},
-
-	/*创建敌机*/
-	newEmeny: function(obj) {
-		var obj = obj || {};
-		return {
-			width: obj.width || 35,
-			height: obj.height || 35,
-			moveSpeed: obj.moveSpeed || 5, //速度
-			top: obj.top,
-			left: obj.left,
-			color: obj.color || 'black',
-			HP: obj.HP || 1, //血量
-			move: function() {
-				this.left -= this.moveSpeed;
-			}
-		}
-	},
-
-	/*创建子弹*/
-	newBullets: function(obj) {
-		var obj = obj || {};
-		console.log(obj)
-		return {
-			width: obj.width || 10,
-			height: obj.height || 5,
-			moveSpeed: obj.moveSpeed || 3,
-			top: obj.top,
-			left: obj.left,
-			color: obj.color || 'blue',
-			atk: obj.atk || 1, //每颗子弹的伤害
-			move: function() {
-				this.left += this.moveSpeed;
-			}
-		}
-	},
-
-	shoot: function() {
-		var bullet = this.newBullets({
-			left: this.plane.left + this.plane.width,
-			top: this.plane.top + this.plane.height / 2,
-		});
-		this.bullets.push(bullet);
-	},
-
-	collisionTest: function() {
-		var bullets = this.bullets;
-		var emenys = this.emenys;
-		var cxt = this.context;
+	var W = $("#stage").width();
+	var H = $("#stage").height();
+	var emenyNum = 30;
+	var score = 0;
+	var gg = 0;
+	
+	/* init */
+	function init() {
+		gg = 0;
+		score = 0;
 		
-		for(var i=0,l=emenys.length; i<l; i++){
-			cxt.rect(emenys[i].left, emenys[i].top, emenys[i].width, emenys[i].height);
-			for(var j=0,k=bullets.length; j<k; j++){
-				/*子弹击中目标*/
-				if(cxt.isPointInPath(bullets[j].left+bullets[j].width, bullets[j].top) 
-					|| cxt.isPointInPath(bullets[j].left+bullets[j].width, bullets[j].top+bullets[j].height)){
-					emenys[i].HP -= bullets[j].atk;
-					bullets.slice(j, 1);
-					if(emenys[i].HP == 0){
-						this.score += 1;
-						console.log('score:'+this.score);
-					}
-				}
-				/*飞机被敌机击中*/
-				if(cxt.isPointInPath(this.plane.left+this.plane.width, this.plane.top)
-					|| cxt.isPointInPath(this.plane.left+this.plane.width, this.plane.top+this.plane.height)){
-					alert("GG");
-				}
-			}
-		}
-	},
-
-	/*渲染*/
-	render: function() {
-		var cxt = this.context;
-		var plane = this.plane;
-		var emenys = this.emenys;
-		var bullets = this.bullets;
-		/*清空全屏*/
-		cxt.clearRect(0, 0, this.W, this.H);
-		/*绘制飞机*/
-		cxt.fillStyle = this.plane.color;
-		cxt.fillRect(plane.left, plane.top, plane.width, plane.height);
-		/*绘制敌机*/
-		for (var i = 0, l = emenys.length; i < l; i++) {
-			cxt.fillStyle = emenys[i].color;
-			cxt.fillRect(emenys[i].left, emenys[i].top, emenys[i].width, emenys[i].height);
-		}
-		/*绘制子弹*/
-		for (var i = 0, l = bullets.length; i < l; i++) {
-			cxt.fillStyle = bullets[i].color;
-			cxt.fillRect(bullets[i].left, bullets[i].top, bullets[i].width, bullets[i].height);
-		}
-	},
-
-	/*数据检测更新*/
-	update: function() {
-		this.collisionTest();
-		/*补充敌机*/
-		var diff = this.emenyNum - this.emenys.length;
-		console.log("差飞机"+diff)
-		if(diff > 0){
-			for(var i=0; i<diff; i++){
-				var emeny = this.newEmeny({
-					left: this.W + Math.random() * this.W,
-					top: Math.random() * this.H
-				});
-				this.emenys.push(emeny);
-			}
+		$("#stage").empty();
+		$("<div></div>").attr("id","score").appendTo("#stage").text("score:"+score);
+		newPlane();
+		for(var i=0,l=emenyNum; i<l; i++){
+			newEmeny();
 		}
 
-		for (var i = 0, l = this.emenys.length; i < l; i++) {
-			/*防止敌机上下出界*/
-			if (this.emenys[i].top <= 0) {
-				this.emenys[i].top = 0;
-			}else if(this.emenys[i].top >= this.H - this.emenys[i].height) {
-				this.emenys[i].top = this.H - this.emenys[i].height;
-			}
-			/*清除出屏幕的敌机*/
-			if(this.emenys[i].left-this.emenys[i].width <= 0){
-				this.emenys.slice(i, 1);
-			}
-			/*移动*/
-			this.emenys[i].move();
-		}
-		for (var i = 0, l = this.bullets.length; i < l; i++) {
-			/*清除出屏幕的子弹*/
-			if(this.bullets[i].left > this.W){
-				this.bullets.slice(i, 1);
-			}
-			/*移动*/
-			this.bullets[i].move();
-		}
+		test();
+	}
 
-		/*不让飞机飞出屏幕*/
-		if(this.plane.left <= 0){
-			this.outside = 37;
-		}else if(this.plane.top <= 0){
-			this.outside = 38;
-		}else if(this.plane.left >= this.W - this.plane.width){
-			this.outside = 39;
-		}else if(this.plane.top >= this.H - this.plane.height){
-			this.outside = 40;
-		}else{
-			this.outside = 0;
+	/* creat plane */
+	function newPlane() {
+		var top = "150px";
+		var left = "60px";
+		
+		$("<div></div>").attr("id", "plane").appendTo("#stage").css({
+			top: top,
+			left: left
+		});
+	}
+
+	/* creat emeny plane */
+	function newEmeny() {
+		var speed = 0.25;
+		var X = "-120px";
+		var top = Math.random() * (H - 120);
+		var left = Math.random() * W + W;
+		var duration = left/speed;
+		
+		$("<div></div>").addClass("emeny").appendTo("#stage").css({
+			top: top,
+			left: left
+		}).animate({
+			left: X,
+		}, duration, "linear", function(){
+			$(this).remove();
+			newEmeny();
+		});
+	}
+
+	/* shoot */
+	function shoot() {		
+		var speed = 0.5;
+		var X = W + 4;
+		var top = $("#plane").css("top").rmpx()*1 + $("#plane").css("height").rmpx()/2;
+		var left = $("#plane").css("left").rmpx()*1 + $("#plane").css("width").rmpx()*1;
+		var duration = (W - left)/speed;
+		
+		$("<div></div>").addClass("bullet").appendTo("#stage").css({
+			top: top,
+			left: left
+		}).animate({
+			left: X
+		}, duration, "linear", function(){
+			$(this).remove();
+		});
+	}
+
+	/* plane move*/
+	function move(e){
+		switch(e){
+			case 37:
+				$("#plane").stop().animate({left: "-=100px"});
+				break;
+			case 38:
+				$("#plane").stop().animate({top: "-=100px"});
+				break;
+			case 39:
+				$("#plane").stop().animate({left: "+=100px"});
+				break;
+			case 40:
+				$("#plane").stop().animate({top: "+=100px"});
+			default:
+				return;
 		}
 	}
-}
+
+	function test(){
+		var ew = 120,	/* emeny width */
+			eh = 120,	/* emeny height */
+			pw = 200,	/* plane width */
+			ph = 200,	/* plane height */
+			bw = 8,		/* bullet width */
+			bh = 4;		/* bullet height */
+		
+		$(".emeny").each(function(){
+			var ex = $(this).css("left").rmpx()*1,		/* emeny left */
+				ey = $(this).css("top").rmpx()*1,		/* emeny top */
+				px = $("#plane").css("left").rmpx()*1,	/* plane left */
+				py = $("#plane").css("top").rmpx()*1;	/* plane top */
+			var this_emeny = $(this);
+
+			/* gg */
+			if(rcd({x1:ex,y1:ey,w1:ew,h1:eh,x2:px,y2:py,w2:pw,h2:ph})){
+				gg = 1;
+				$(".emeny").stop();
+				$(".bullet").stop();
+				$("#end").show();
+			}
+			
+			$(".bullet").each(function(){
+				var bx = $(this).css("left").rmpx()*1,
+					by = $(this).css("top").rmpx()*1;
+				if(rcd({x1:ex,y1:ey,w1:ew,h1:eh,x2:bx,y2:by,w2:bw,h2:bh})){
+					score += 1;
+					$(this).remove();
+					this_emeny.remove();
+					$("#score").text("score:"+score);
+				}
+			});
+		});
+
+		setTimeout(function(){
+			return test();
+		}, 60);
+	}
+
+	/* rect collision detection */
+	/*param
+	*obj = {
+	*	x1,y1,w1,h1,x2,y2,w2,h2
+	*}
+	**/
+	function rcd(obj) {
+		var dx = Math.floor(Math.abs((obj.x1+obj.w1/2)-(obj.x2+obj.w2/2)));
+		var dy = Math.floor(Math.abs((obj.y1+obj.h1/2)-(obj.y2+obj.h2/2)));
+		if(dx <= (obj.w1+obj.w2)/2 && dy <= (obj.h1+obj.h2)/2){
+			return 1;
+		}
+	}
+
+	/* remove "px" in string */
+	String.prototype.rmpx = function(){
+		return this.substring(0, this.length-2)
+	}
+
+	/* keydown listener */
+	$(window).on("keydown", function(event){
+		if(gg == 1)return;
+
+		if(event.keyCode == 32){
+			shoot();
+		}else{
+			move(event.keyCode);
+		}
+	});
+	
+	/* start */
+	$("#startBtn").click(function(){
+		$("#start").hide();
+		init();
+	});
+	
+	/* restart */
+	$("#reStartBtn").click(function(){
+		$("#end").hide();
+		init();
+	});
+
+})();

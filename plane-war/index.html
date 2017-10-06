@@ -6,26 +6,17 @@
 	<meta charset="utf-8">
 </head>
 <body>
-	<canvas id="canvas">
-		当前浏览器不支持canvas
-	</canvas>
+	<div id="start">
+		<p>PLANE WAR</p>
+		<div class="button" id="startBtn">START</div>
+	</div>
+	<div id="stage">
+	</div>
+	<div id="end" style="display: none">
+		<p>GAME OVER</p>
+		<div class="button" id="reStartBtn">START</div>
+	</div>
+<script type="text/javascript" src="jquery-1.11.3.min.js"></script>
 <script type="text/javascript" src="game.js"></script>
-<script type="text/javascript">
-	var global = (function(){
-		var W = document.body.clientWidth;
-		var H = document.body.clientHeight;
-		
-		var canvas = document.getElementById("canvas");
-		var context = canvas.getContext("2d");	
-		canvas.width = W;
-		canvas.height = H;
-		return {
-			W: W,
-			H: H,
-			ctx: context
-		}
-	})();
-	stage.init(global);
-</script>
 </body>
 </html>
